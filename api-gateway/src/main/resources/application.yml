@@ -1,11 +1,15 @@
 server:
-  port: 8080
+  port: 8082
 
 spring:
   application:
     name: api-gateway
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
       routes:
         - id: auth-service
           uri: lb://auth-service
@@ -23,28 +27,28 @@ spring:
           uri: lb://coach-service
           predicates:
             - Path=/coaches/**
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin
       globalcors:
         corsConfigurations:
           '[/**]':
             allowedOrigins: "*"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-              - OPTIONS
-            allowedHeaders:
-              - Content-Type
-              - Authorization
-            allowCredentials: true
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            exposedHeaders: "*"
 
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+  endpoint:
+    health:
+      show-details: always
