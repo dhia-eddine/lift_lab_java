@@ -1,6 +1,6 @@
-package hadoop.mapreduce.clientservice.config;
+package hadoop.mapreduce.coachservice.config;
 
-import hadoop.mapreduce.clientservice.util.JwtTokenFilter;
+import hadoop.mapreduce.coachservice.util.JwtTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +19,7 @@ import javax.servlet.Filter;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
     private final JwtTokenFilter jwtTokenFilter;
     private final UserDetailsService userDetailsService;
 
@@ -29,28 +30,36 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // Disable CSRF for simplicity
         http.csrf().disable()
+                // Restrict access under /coaches
                 .authorizeRequests()
-                .antMatchers("/clients/**").authenticated()
+                .antMatchers("/coaches/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
+                // Set session management to stateless
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.addFilterBefore((Filter) jwtTokenFilter, (Class<? extends javax.servlet.Filter>) UsernamePasswordAuthenticationFilter.class);    }
+        // Insert the custom JWT filter before UsernamePasswordAuthenticationFilter
+        http.addFilterBefore((Filter) jwtTokenFilter, (Class<? extends Filter>) UsernamePasswordAuthenticationFilter.class);
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // Use our custom UserDetailsService and a password encoder
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
+        // Expose the AuthenticationManager as a bean
         return super.authenticationManagerBean();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+        // BCrypt for hashing passwords
         return new BCryptPasswordEncoder();
     }
 }

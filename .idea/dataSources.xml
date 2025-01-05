@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="lift_lab_db@localhost" uuid="0b5d387d-f6d4-4200-bed2-622ea12942da">
+    <data-source source="LOCAL" name="lift_lab_db" uuid="31a05482-30a2-49b8-b9be-5ac786d5dd9d">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
-      <imported>true</imported>
-      <remarks>$PROJECT_DIR$/auth-service/src/main/resources/application.yml</remarks>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://localhost:5432/lift_lab_db</jdbc-url>
       <jdbc-additional-properties>
